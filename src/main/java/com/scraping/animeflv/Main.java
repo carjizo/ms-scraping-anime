@@ -12,11 +12,11 @@ import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-//        String nameAnime = "naruto";
-//        String pageList = "1";
-//        searchAnime(nameAnime, pageList);
-        String id = "naruto";
-        infoAnime(id);
+        String nameAnime = "boku";
+        String pageList = "1";
+        searchAnime(nameAnime, pageList);
+//        String id = "naruto";
+//        infoAnime(id);
 //        String cap = "220";
 //        links(cap, id);
     }
@@ -117,8 +117,8 @@ public class Main {
             // Obtener el href del <a> dentro del <li>
             String numberPage = pagination.select("a").text();
             // Verificar si el número es válido
-            if (isNumber(page)) {
-                pageNumbers.add(page);
+            if (isNumber(numberPage)) {
+                pageNumbers.add(numberPage);
             }
         }
         System.out.println("Lista de números de página: " + pageNumbers);

@@ -62,8 +62,8 @@ public class ScrapingServiceImpl implements ScrapingService {
             // Obtener el href del <a> dentro del <li>
             String numberPage = pagination.select("a").text();
             // Verificar si el número es válido
-            if (isNumber(page)) {
-                pageNumbers.add(page);
+            if (isNumber(numberPage)) {
+                pageNumbers.add(numberPage);
             }
         }
         // Calcular la longitud de la lista
