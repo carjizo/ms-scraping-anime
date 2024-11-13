@@ -112,19 +112,26 @@ public class ScrapingServiceImpl implements ScrapingService {
     }
 
     @Override
-    public List<String> links(String id, String cap) throws IOException {
-        String idCap = "/" + id + "-" + cap;
-        String url = Constants.URL_ANIME_FLV + Constants.RESOURCE_LINKS + idCap;
-        Document document = Jsoup.connect(url).get();
-        Elements rows = document.select("table.RTbl.Dwnl tbody tr");
+    public List<String> links(String id, String cap) {
         List<String> links = new ArrayList<>();
-        for (Element row : rows) {
-            Elements columns = row.select("td");
-            String link = columns.get(3).select("a").attr("href");
-            links.add(link);
+        try {
+            String idCap = "/" + id + "-" + cap;
+            String url = Constants.URL_ANIME_FLV + Constants.RESOURCE_LINKS + idCap;
+            Document document = Jsoup.connect(url).get();
+            Elements rows = document.select("table.RTbl.Dwnl tbody tr");
+            for (Element row : rows) {
+                Elements columns = row.select("td");
+                String link = columns.get(3).select("a").attr("href");
+                links.add(link);
+            }
+
+            return links;
+        } catch (Exception e) {
+            System.out.println("Exception: " + e);
+//            throw new RuntimeException(e);
+            return links;
         }
 
-        return links;
     }
 
     public static boolean isNumber(String input) {

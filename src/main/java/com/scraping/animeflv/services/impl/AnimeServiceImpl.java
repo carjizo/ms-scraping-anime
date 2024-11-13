@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -27,8 +28,18 @@ public class AnimeServiceImpl implements AnimeService {
     }
 
     @Override
-    public List<String> getLinks(String id, String cap) throws IOException {
-        return scrapingService.links(id, cap);
+    public HashMap<String, Object> getLinks(String id, String cap) throws IOException {
+        List<String> linksAnimes = scrapingService.links(id, cap);
+        HashMap<String, Object> response = new HashMap<>();
+        if (linksAnimes.isEmpty()){
+            response.put("message", "No existen links");
+            response.put("isSucces", false);
+        } else {
+            response.put("message", "Succes");
+            response.put("isSucces", true);
+            response.put("links", linksAnimes);
+        }
+        return response;
     }
 
 }

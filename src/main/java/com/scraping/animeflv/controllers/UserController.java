@@ -26,7 +26,6 @@ public class UserController {
                         .status(user.isStatus())
                         .build())
                 .toList();
-
         return new ResponseEntity<>(userDTOList, HttpStatus.OK);
     }
 }

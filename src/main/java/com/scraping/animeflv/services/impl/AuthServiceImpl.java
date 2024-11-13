@@ -23,38 +23,57 @@ public class AuthServiceImpl implements AuthService {
     private JWTUtilityService jwtUtilityService;
 
     @Override
-    public HashMap<String, String> login(RequestLoginDTO requestLoginDTO) throws Exception {
+    public HashMap<String, Object> login(RequestLoginDTO requestLoginDTO) throws Exception {
+        HashMap<String, Object> response = new HashMap<>();
         try {
-            HashMap<String, String> jwt = new HashMap<>();
             Optional<User> user = userRepository.findByIdIdent(requestLoginDTO.getIdIdent());
             if (user.isEmpty()) {
-                jwt.put("error", "User not registered!");
-                return jwt;
+                response.put("message", "User not registered");
+                response.put("isSucces", false);
+                return response;
             }
             if (verifyPassword(requestLoginDTO.getPassword(), user.get().getPassword())) {
-                jwt.put("jwt", jwtUtilityService.generateJWT(user.get().getIdUser()));
+                response.put("message", "Authentication succes");
+                response.put("isSucces", true);
+                response.put("token", jwtUtilityService.generateJWT(user.get().getIdUser()));
             } else {
-                jwt.put("error", "Authentication failed");
+                response.put("message", "Authentication failed");
+                response.put("isSucces", false);
             }
-            return jwt;
+            return response;
         } catch (IllegalArgumentException e) {
             System.err.println("Error generating JWT: " + e.getMessage());
-            throw new Exception("Error generating JWT", e);
+//            throw new Exception("Error generating JWT", e);
+            response.put("message", "Error generating JWT");
+            response.put("isSucces", false);
+            return response;
         } catch (Exception e) {
             System.err.println("Unknown error: " + e.toString());
-            throw new Exception("Unknown error", e);
+//            throw new Exception("Unknown error", e);
+            response.put("message", "Error generating JWT");
+            response.put("isSucces", false);
+            return response;
         }
     }
 
     @Override
-    public String register(User user) throws Exception {
-        String response;
+    public HashMap<String, Object> register(RequestLoginDTO requestLoginDTO) throws Exception{
+        User user = User.builder()
+                .idIdent(requestLoginDTO.getIdIdent())
+                .password(requestLoginDTO.getPassword())
+                .role(requestLoginDTO.getRole())
+                .status(true)
+                .build();
+
+        HashMap<String, Object> response = new HashMap<>();
+
         try {
             List<User> getAllUsers = (List<User>) userRepository.findAll();
 
             for (User existingUser : getAllUsers) {
                 if (existingUser.getIdIdent().equals(user.getIdIdent())) {
-                    response = "Identity already exists!";
+                    response.put("message", "Identity already exists");
+                    response.put("isSucces", false);
                     return response;
                 }
             }
@@ -62,19 +81,29 @@ public class AuthServiceImpl implements AuthService {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
             user.setPassword(encoder.encode(user.getPassword()));
             userRepository.save(user);
-            response = "User created successfully!";
+            response.put("message", "User created successfully");
+            response.put("isSucces", true);
             return response;
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            response.put("message", "Error Exception");
+            response.put("isSucces", false);
+            System.out.println("Error Exception: " + e.getMessage());
+//            throw new Exception(e.getMessage());
+            return response;
         }
     }
 
     @Override
-    public boolean verifyToken(String jwt) throws Exception {
+    public HashMap<String, Object> verifyToken(String jwt) throws Exception {
+        HashMap<String, Object> response = new HashMap<>();
         try {
-            return jwtUtilityService.verifyJWT(jwt);
+            response.put("message", "Authentication succes");
+            response.put("isSucces", jwtUtilityService.verifyJWT(jwt));
+            return response;
         } catch (Exception e) {
-            return false;
+            response.put("message", "Authentication failed");
+            response.put("isSucces", false);
+            return response;
         }
     }
 

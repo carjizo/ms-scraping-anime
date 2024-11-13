@@ -6,10 +6,12 @@ import com.scraping.animeflv.entities.AnimeInfo;
 import com.scraping.animeflv.entities.AnimePagination;
 import com.scraping.animeflv.services.AnimeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -32,8 +34,8 @@ public class AnimeController {
     }
 
     @PostMapping("/links")
-    public ResponseEntity<?> links(@RequestBody LinksRequestDTO linksRequestDTO) throws IOException {
-        List<String> links = animeService.getLinks(linksRequestDTO.getId(), linksRequestDTO.getCap());
-        return ResponseEntity.ok(links);
+    public ResponseEntity<HashMap<String, Object>> links(@RequestBody LinksRequestDTO linksRequestDTO) throws IOException {
+        HashMap<String, Object> response = animeService.getLinks(linksRequestDTO.getId(), linksRequestDTO.getCap());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

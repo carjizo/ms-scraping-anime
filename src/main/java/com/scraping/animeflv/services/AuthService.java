@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public interface AuthService {
 
-    public HashMap<String, String> login(RequestLoginDTO requestLoginDTO) throws Exception;
-    public String register(User user) throws Exception;
-    public boolean verifyToken(String jwt) throws Exception;
+    public HashMap<String, Object> login(RequestLoginDTO requestLoginDTO) throws Exception;
+    public HashMap<String, Object>  register(RequestLoginDTO requestLoginDTO) throws Exception;
+    public HashMap<String, Object> verifyToken(String jwt) throws Exception;
 }

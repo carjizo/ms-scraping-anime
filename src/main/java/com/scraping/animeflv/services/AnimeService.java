@@ -4,6 +4,7 @@ import com.scraping.animeflv.entities.AnimeInfo;
 import com.scraping.animeflv.entities.AnimePagination;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 public interface AnimeService {
@@ -12,5 +13,5 @@ public interface AnimeService {
 
     AnimeInfo info(String id) throws IOException;
 
-    List<String> getLinks(String id, String cap) throws IOException;
+    HashMap<String, Object> getLinks(String id, String cap) throws IOException;
 }
