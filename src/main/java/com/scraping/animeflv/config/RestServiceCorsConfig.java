@@ -19,6 +19,13 @@ public class RestServiceCorsConfig {
                         .allowCredentials(true)
                         .maxAge(3600);
 
+                registry.addMapping("/**")
+                        .allowedOrigins("https://template-scraping-anime.onrender.com")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("Origin", "Content-Type", "Accept", "Authorization")
+                        .allowCredentials(true)
+                        .maxAge(3600);
+
                 registry.addMapping("/auth/**")
                         .allowedOrigins("*")
                         .allowedMethods("OPTIONS", "POST")
