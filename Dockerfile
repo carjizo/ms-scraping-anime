@@ -16,5 +16,6 @@
 # ENTRYPOINT [ "java", "-jar", "app.jar" ]
 FROM openjdk:17-jdk-alpine
 MAINTAINER carloshernanjimenez876@gmail.com
-COPY /target/scraping-animeflv-0.0.1-SNAPSHOT.jar scraping-animeflv.jar
-ENTRYPOINT ["java","-jar","/scraping-animeflv.jar"]
+VOLUME /tmp
+COPY /target/scraping-animeflv-0.0.1-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
