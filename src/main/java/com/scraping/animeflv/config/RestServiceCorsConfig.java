@@ -28,7 +28,7 @@ public class RestServiceCorsConfig {
 
                 registry.addMapping("/auth/**")
                         .allowedOrigins("*")
-                        .allowedMethods("OPTIONS", "POST")
+                        .allowedMethods("OPTIONS", "POST", "GET")
                         .allowedHeaders("Origin", "Content-Type", "Accept", "Authorization")
                         .allowCredentials(false)
                         .maxAge(3600);

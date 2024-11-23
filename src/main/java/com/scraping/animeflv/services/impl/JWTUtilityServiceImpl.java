@@ -6,7 +6,9 @@ import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.scraping.animeflv.services.JWTUtilityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Service;
@@ -35,8 +37,28 @@ public class JWTUtilityServiceImpl implements JWTUtilityService {
     @Value("classpath:jwtKeys/public_key.pem")
     private Resource publicKeyResource;
 
+    @Autowired
+    private Environment environment;
+
     @Override
     public String generateJWT(Long userId) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, JOSEException {
+        PrivateKey privateKey = loadPrivateKey(privateKeyResource);
+
+        JWSSigner signer = new RSASSASigner(privateKey);
+        Date now = new Date();
+        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+                .subject(userId.toString())
+                .issueTime(now)
+                .expirationTime(new Date(now.getTime() + Integer.parseInt(environment.getProperty("env.expiration.time.token"))))
+                .build();
+
+        SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claimsSet);
+        signedJWT.sign(signer);
+        return signedJWT.serialize();
+    }
+
+    @Override
+    public String generateRefreshJWT(Long userId) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, JOSEException {
         PrivateKey privateKey = loadPrivateKey(privateKeyResource);
 
         JWSSigner signer = new RSASSASigner(privateKey);
@@ -45,7 +67,7 @@ public class JWTUtilityServiceImpl implements JWTUtilityService {
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                 .subject(userId.toString())
                 .issueTime(now)
-                .expirationTime(new Date(now.getTime() + 14400000)) //token expirará después de 4 horas
+                .expirationTime(new Date(now.getTime() + Integer.parseInt(environment.getProperty("env.expiration.time.refresh.token"))))
                 .build();
 
         SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claimsSet);

@@ -12,6 +12,8 @@ public interface JWTUtilityService {
 
     public String generateJWT(Long subject) throws JOSEException, ParseException, IOException, NoSuchAlgorithmException, InvalidKeySpecException;
 
+    public String generateRefreshJWT(Long subject) throws JOSEException, ParseException, IOException, NoSuchAlgorithmException, InvalidKeySpecException;
+
     public JWTClaimsSet parseJWT(String jwt) throws ParseException, JOSEException, IOException, NoSuchAlgorithmException, InvalidKeySpecException;
 
     public boolean verifyJWT(String jwt) throws JOSEException, IOException, org.springframework.expression.ParseException, NoSuchAlgorithmException, InvalidKeySpecException, java.text.ParseException;

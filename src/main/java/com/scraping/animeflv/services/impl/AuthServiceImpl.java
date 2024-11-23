@@ -1,5 +1,6 @@
 package com.scraping.animeflv.services.impl;
 
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.scraping.animeflv.entities.User;
 import com.scraping.animeflv.repositories.UserRepository;
 import com.scraping.animeflv.services.AuthService;
@@ -36,6 +37,7 @@ public class AuthServiceImpl implements AuthService {
                 response.put("message", "Authentication succes");
                 response.put("isSucces", true);
                 response.put("token", jwtUtilityService.generateJWT(user.get().getIdUser()));
+                response.put("refreshToken", jwtUtilityService.generateRefreshJWT(user.get().getIdUser()));
             } else {
                 response.put("message", "Authentication failed");
                 response.put("isSucces", false);
@@ -99,6 +101,29 @@ public class AuthServiceImpl implements AuthService {
         try {
             response.put("message", "Authentication succes");
             response.put("isSucces", jwtUtilityService.verifyJWT(jwt));
+            return response;
+        } catch (Exception e) {
+            response.put("message", "Authentication failed");
+            response.put("isSucces", false);
+            return response;
+        }
+    }
+
+    @Override
+    public HashMap<String, Object> refreshToken(String jwt) throws Exception {
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+            boolean verifyJWT = jwtUtilityService.verifyJWT(jwt);
+            if (!verifyJWT) {
+                response.put("message", "Authentication failed");
+                response.put("isSucces", false);
+                return response;
+            }
+            JWTClaimsSet parseJWT = jwtUtilityService.parseJWT(jwt);
+            String idUser = parseJWT.getSubject();
+            response.put("isSucces", true);
+            response.put("message", "Authentication succes");
+            response.put("token", jwtUtilityService.generateJWT(Long.valueOf(idUser)));
             return response;
         } catch (Exception e) {
             response.put("message", "Authentication failed");

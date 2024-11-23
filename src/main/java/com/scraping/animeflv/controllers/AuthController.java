@@ -37,4 +37,10 @@ public class AuthController {
         HashMap<String, Object> login = authService.verifyToken(token);
         return new ResponseEntity<>(login, HttpStatus.OK);
     }
+
+    @GetMapping("/refresh-token/{token}")
+    public ResponseEntity<HashMap<String, Object>> refreshToken(@PathVariable String token) throws Exception {
+        HashMap<String, Object> login = authService.refreshToken(token);
+        return new ResponseEntity<>(login, HttpStatus.OK);
+    }
 }
